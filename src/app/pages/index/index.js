@@ -2,7 +2,8 @@
  * Created by lishoubo on 16/5/21.
  */
 
-window.host = "http://192.168.1.107:8080";
+// window.host = "http://192.168.1.107:8080";
+window.host = "http://localhost:8080";
 $(function () {
     $('#side-menu').metisMenu();
 });

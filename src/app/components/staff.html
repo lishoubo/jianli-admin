@@ -45,9 +45,18 @@
                 </thead>
                 <tbody>
 
-                <tr role="row" v-for="staff in result.items">
+                <tr role="row" v-for="staff in data.items">
                     <td class="sorting_1">
                         {% raw %}{{ staff.name }}{% endraw %}
+                    </td>
+                    <td class="sorting_2">
+                        {% raw %}{{ staff.grade }}{% endraw %}
+                    </td>
+                    <td class="sorting_3">
+                        {% raw %}{{ staff.qualification }}{% endraw %}
+                    </td>
+                    <td class="sorting_4">
+                        {% raw %}{{ staff.professional }}{% endraw %}
                     </td>
                 </tr>
                 </tbody>
@@ -58,17 +67,17 @@
         <div class="col-md-12">
             <div class="dataTables_paginate paging_simple_numbers" style="float: right">
                 <ul class="pagination pagination-sm">
-                    <li class="paginate_button previous" v-bind:class="{ 'disabled': result.page === 1 }">
+                    <li class="paginate_button previous" v-bind:class="{ 'disabled': data.page === 1 }">
                         <a href="#">上一页</a>
                     </li>
                     <li class="paginate_button"
-                        v-for="p in result.pageTotal - 1"
-                        v-bind:class="{ 'active': p + 1 == result.page }">
+                        v-for="p in data.pageTotal - 1"
+                        v-bind:class="{ 'active': p + 1 == data.page }">
                         <a href="#">
                             {% raw %}{{ p + 1 }}{% endraw %}
                         </a>
                     </li>
-                    <li class="paginate_button next" v-bind:class="{ 'disabled': result.page === result.pageTotal }">
+                    <li class="paginate_button next" v-bind:class="{ 'disabled': data.page === data.pageTotal }">
                         <a href="#">下一页</a></li>
                 </ul>
             </div>
@@ -114,37 +123,32 @@
 </div>
 <script>
     $(function () {
-        var data = {
-            page: 1,
-            pageSize: 10,
-            pageTotal: 10,
-            items: [
-                {
-                    name: "lishoubo",
-                    grade: 1
-                },
-                {
-                    name: "zhanglu",
-                    grade: 1
-                }
-
-            ]
-        };
-        $.ajax({
-            method: 'get',
-            url: window.host + '/api/admin/staffs/',
-            success: function (result) {
-                if (result.success) {
-                    data = result.data;
-                } else {
-                    bootbox.alert(result.message);
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-//                bootbox.alert(textStatus);
-                console.log(errorThrown)
+        var result = {
+            data: {
+                page: 1,
+                pageSize: 10,
+                pageTotal: 1,
+                items: []
             }
-        });
+        };
+
+        function fetch_staffs() {
+            $.ajax({
+                method: 'get',
+                url: window.host + '/api/admin/staffs/',
+                success: function (response) {
+                    if (response.success) {
+                        result.data = response.data;
+                    } else {
+                        bootbox.alert(response.message);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+//                bootbox.alert(textStatus);
+                    console.log(errorThrown)
+                }
+            });
+        }
 
         $('#add-staff-btn').click(function (e) {
             var data = $('#add-staff-form').serialize();
@@ -169,13 +173,13 @@
 
         new Vue({
             el: '#jd-staff-container',
-            data: {
-                result: data
-            }
+            data: result
         });
         new Vue({
             el: '#add-staff-modal'
         });
+
+        fetch_staffs();
 
     });
 
