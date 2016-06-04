@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>{% block title %}Miss{% endblock %}</title>
+    {% block head %}
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/metisMenu/2.5.2/metisMenu.min.css" rel="stylesheet">
+    <link href="/css/admin.css" rel="stylesheet">
+    {% endblock %}
+</head>
+<body>
+<div id="wrapper">
+    {% include "../components/nav-bar.html" %}
+
+    <div id="page-wrapper">
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+{% block footer %}
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/metisMenu/2.5.2/metisMenu.min.js"></script>
+<script src="//cdn.bootcss.com/vue/1.0.24/vue.min.js"></script>
+<script src="/js/admin.page.js"></script>
+{% endblock %}
+</body>
+</html>

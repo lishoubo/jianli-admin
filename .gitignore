@@ -1,0 +1,12 @@
+.idea
+.DS_Store
+*.iml
+target
+*.log*
+classes
+*.class
+.project
+.classpath
+.settings
+node_modules
+dist
