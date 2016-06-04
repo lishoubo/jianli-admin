@@ -6,9 +6,12 @@
     <title>{% block title %}Miss{% endblock %}</title>
     {% block head %}
     <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap-modal/2.2.6/css/bootstrap-modal.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/datatables/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/metisMenu/2.5.2/metisMenu.min.css" rel="stylesheet">
     <link href="/css/admin.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     {% endblock %}
 </head>
 <body>
@@ -21,10 +24,15 @@
     </div>
 </div>
 {% block footer %}
-<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/bootbox.js/4.4.0/bootbox.js"></script>
+<script src="//cdn.bootcss.com/bootstrap-modal/2.2.6/js/bootstrap-modal.js"></script>
+<script src="//cdn.bootcss.com/bootstrap-modal/2.2.6/js/bootstrap-modalmanager.min.js"></script>
 <script src="//cdn.bootcss.com/metisMenu/2.5.2/metisMenu.min.js"></script>
-<script src="//cdn.bootcss.com/vue/1.0.24/vue.min.js"></script>
+<script src="//cdn.bootcss.com/vue/1.0.24/vue.js"></script>
+<script src="//cdn.bootcss.com/vue-validator/2.1.2/vue-validator.js"></script>
+<script src="//cdn.bootcss.com/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.bootcss.com/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
 <script src="/js/admin.page.js"></script>
 {% endblock %}
 </body>

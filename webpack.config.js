@@ -3,7 +3,7 @@ var path = require('path'),
 
 module.exports = {
     entry: {
-        admin: './src/app/pages/admin/admin.js'
+        admin: './src/app/pages/index/index.js'
     },
     output: {
         path: path.join(__dirname, 'dist'),
