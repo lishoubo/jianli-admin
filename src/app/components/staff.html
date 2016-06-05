@@ -72,7 +72,8 @@
                     </li>
                     <li class="paginate_button"
                         v-for="p in data.pageTotal - 1"
-                        v-bind:class="{ 'active': p + 1 == data.page }">
+                        v-bind:class="{ 'active': p + 1 == data.page }"
+                        v-on:click="go_to_page(p + 1)">
                         <a href="#">
                             {% raw %}{{ p + 1 }}{% endraw %}
                         </a>
@@ -156,13 +157,17 @@
             })
         }
 
-        function fetch_staffs() {
+        function fetch_staffs(page) {
+            if (!page) {
+                page = 1;
+            }
             $.ajax({
                 method: 'get',
-                url: window.host + '/api/admin/staffs/',
+                url: window.host + '/api/admin/staffs?page=' + page,
                 success: function (response) {
                     if (response.success) {
                         result.data = response.data;
+                        console.log(response.data)
                     } else {
                         bootbox.alert(response.message);
                     }
@@ -175,11 +180,17 @@
 
         new Vue({
             el: '#jd-staff-container',
-            data: result
+            data: result,
+            methods: {
+                go_to_page: function (page) {
+                    fetch_staffs(page)
+                }
+
+            }
         });
         new Vue({
             el: '#add-staff-modal',
-            methods:{
+            methods: {
                 add_staff: function () {
                     add_staff();
                 }
