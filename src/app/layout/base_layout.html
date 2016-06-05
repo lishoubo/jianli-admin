@@ -12,6 +12,26 @@
     <link href="//cdn.bootcss.com/metisMenu/2.5.2/metisMenu.min.css" rel="stylesheet">
     <link href="/css/admin.css" rel="stylesheet">
     <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script>
+        (function ($) {
+            $.fn.serializeFormJSON = function () {
+
+                var o = {};
+                var a = this.serializeArray();
+                $.each(a, function () {
+                    if (o[this.name]) {
+                        if (!o[this.name].push) {
+                            o[this.name] = [o[this.name]];
+                        }
+                        o[this.name].push(this.value || '');
+                    } else {
+                        o[this.name] = this.value || '';
+                    }
+                });
+                return o;
+            };
+        })(jQuery);
+    </script>
     {% endblock %}
 </head>
 <body>

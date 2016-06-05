@@ -68,7 +68,7 @@
             <div class="dataTables_paginate paging_simple_numbers" style="float: right">
                 <ul class="pagination pagination-sm">
                     <li class="paginate_button previous" v-bind:class="{ 'disabled': data.page === 1 }">
-                        <a href="#">上一页</a>
+                        <a href="#" v-on:click="go_to_page(data.page - 1)">上一页</a>
                     </li>
                     <li class="paginate_button"
                         v-for="p in data.pageTotal - 1"
@@ -79,7 +79,7 @@
                         </a>
                     </li>
                     <li class="paginate_button next" v-bind:class="{ 'disabled': data.page === data.pageTotal }">
-                        <a href="#">下一页</a></li>
+                        <a href="#" v-on:click="go_to_page(data.page + 1)">下一页</a></li>
                 </ul>
             </div>
         </div>
@@ -103,8 +103,16 @@
                                    v-validate:name="['required']">
                         </div>
                         <div class="form-group">
-                            <label for="grade">等级</label>
-                            <input type="text" class="form-control" id="grade" placeholder="等级">
+                            <label>等级</label>
+                            <input type="text" class="form-control" name="grade" placeholder="等级">
+                        </div>
+                        <div class="form-group">
+                            <label>资历</label>
+                            <input type="text" class="form-control" name="qualification" placeholder="资历">
+                        </div>
+                        <div class="form-group">
+                            <label>专业</label>
+                            <input type="text" class="form-control" name="professional" placeholder="专业">
                         </div>
                         <div class="alert-danger">
                             <p v-if="$staffValidator.name.required">填写姓名</p>
@@ -126,19 +134,18 @@
     $(function () {
         var result = {
             data: {
-                page: 1,
+                page: 0,
                 pageSize: 10,
-                pageTotal: 1,
                 items: []
             }
         };
 
         function add_staff() {
-            var data = $('#add-staff-form').serialize();
+            var data = $('#add-staff-form').serializeFormJSON();
             $.ajax({
                 method: 'post',
                 url: window.host + '/api/admin/staffs',
-                data: {"name": "fe"},
+                data: data,
                 success: function (result) {
                     if (result.success) {
                         window.location.reload();
@@ -160,6 +167,9 @@
         function fetch_staffs(page) {
             if (!page) {
                 page = 1;
+            }
+            if (page < 1 || (!!result.data.pageTotal && page >= result.data.pageTotal)) {
+                return
             }
             $.ajax({
                 method: 'get',
@@ -197,7 +207,7 @@
             }
         });
 
-        fetch_staffs();
+        fetch_staffs(1);
 
     });
 
