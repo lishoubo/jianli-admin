@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>{% block title %}Miss{% endblock %}</title>
+    <title>{% block title %}崔工监理-控制台{% endblock %}</title>
     {% block head %}
     <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/bootstrap-modal/2.2.6/css/bootstrap-modal.min.css" rel="stylesheet">
@@ -53,7 +53,71 @@
 <script src="//cdn.bootcss.com/vue-validator/2.1.2/vue-validator.js"></script>
 <script src="//cdn.bootcss.com/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="//cdn.bootcss.com/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
-<script src="/js/admin.page.js"></script>
 {% endblock %}
+<script>
+    $(function () {
+        $('#side-menu').metisMenu();
+    });
+
+    Vue.mixin({
+        methods: {
+            _api_host: function () {
+                return "http://localhost:8080";
+            },
+            _post: function (api, data, success_callback, error_callback) {
+                var self = this;
+                $.ajax({
+                    method: 'post',
+                    url: self._api_host() + api,
+                    data: data,
+                    success: success_callback,
+                    error: error_callback
+                })
+            },
+            _get: function (api, data, success_callback, error_callback) {
+                var self = this;
+                $.ajax({
+                    method: 'get',
+                    url: self._api_host() + api,
+                    data: data,
+                    success: success_callback,
+                    error: error_callback
+                })
+            }
+
+        }
+    });
+
+    //Loads the correct sidebar on window load,
+    //collapses the sidebar on window resize.
+    // Sets the min-height of #page-wrapper to window size
+    $(function () {
+        $(window).bind("load resize", function () {
+            topOffset = 50;
+            width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width;
+            if (width < 768) {
+                $('div.navbar-collapse').addClass('collapse');
+                topOffset = 100; // 2-row-menu
+            } else {
+                $('div.navbar-collapse').removeClass('collapse');
+            }
+
+            height = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1;
+            height = height - topOffset;
+            if (height < 1) height = 1;
+            if (height > topOffset) {
+                $("#page-wrapper").css("min-height", (height) + "px");
+            }
+        });
+
+        var url = window.location;
+        var element = $('ul.nav a').filter(function () {
+            return this.href == url || url.href.indexOf(this.href) == 0;
+        }).addClass('active').parent().parent().addClass('in').parent();
+        if (element.is('li')) {
+            element.addClass('active');
+        }
+    })
+</script>
 </body>
 </html>

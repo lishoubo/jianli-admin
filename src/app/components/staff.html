@@ -41,6 +41,8 @@
                     <th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1"
                         aria-label="Age: activate to sort column ascending" style="width: 44px;">专业
                     </th>
+                    <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">操作
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -57,6 +59,10 @@
                     </td>
                     <td class="sorting_4">
                         {% raw %}{{ staff.professional }}{% endraw %}
+                    </td>
+                    <td>
+                        <a href="#">编辑</a>
+                        <a href="#">删除</a>
                     </td>
                 </tr>
                 </tbody>
@@ -140,60 +146,27 @@
             }
         };
 
-        function add_staff() {
-            var data = $('#add-staff-form').serializeFormJSON();
-            $.ajax({
-                method: 'post',
-                url: window.host + '/api/admin/staffs',
-                data: data,
-                success: function (result) {
-                    if (result.success) {
-                        window.location.reload();
-                    } else {
-                        bootbox.alert({
-                                    title: "添加失败",
-                                    message: result.message,
-                                    closable: true
-                                }
-                        );
-                    }
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            })
-        }
-
-        function fetch_staffs(page) {
-            if (!page) {
-                page = 1;
-            }
-            if (page < 1 || (!!result.data.pageTotal && page >= result.data.pageTotal)) {
-                return
-            }
-            $.ajax({
-                method: 'get',
-                url: window.host + '/api/admin/staffs?page=' + page,
-                success: function (response) {
-                    if (response.success) {
-                        result.data = response.data;
-                        console.log(response.data)
-                    } else {
-                        bootbox.alert(response.message);
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    bootbox.alert(textStatus);
-                }
-            });
-        }
-
         new Vue({
             el: '#jd-staff-container',
             data: result,
+            created: function () {
+                this.go_to_page(1);
+            },
             methods: {
                 go_to_page: function (page) {
-                    fetch_staffs(page)
+                    if (!page) {
+                        page = 1;
+                    }
+                    if (page < 1 || (!!result.data.pageTotal && page >= result.data.pageTotal)) {
+                        return
+                    }
+                    this._get("/api/admin/staffs",
+                            {'page': page},
+                            function (response) {
+                                result.data = response.data;
+                            }, function (error) {
+                                console.log(error);
+                            })
                 }
 
             }
@@ -202,13 +175,29 @@
             el: '#add-staff-modal',
             methods: {
                 add_staff: function () {
-                    add_staff();
+                    var data = $('#add-staff-form').serializeFormJSON();
+                    console.log(data);
+                    this._post("/api/admin/staffs",
+                            data,
+                            function (response) {
+                                if (response.success) {
+                                    window.location.reload();
+                                } else {
+                                    bootbox.alert({
+                                                title: "添加失败",
+                                                message: response.message,
+                                                closable: true
+                                            }
+                                    );
+                                }
+                            }, function (error) {
+                                console.log(error)
+                            }
+                    )
+
                 }
             }
         });
-
-        fetch_staffs(1);
-
     });
 
 </script>
