@@ -161,7 +161,7 @@
                         return
                     }
                     this._get("/api/admin/staffs",
-                            {'page': page},
+                            {'page': page, 'pageSize': 10},
                             function (response) {
                                 result.data = response.data;
                             }, function (error) {
