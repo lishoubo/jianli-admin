@@ -3,9 +3,10 @@ var path = require('path'),
 
 module.exports = {
     entry: {
-        admin: './src/app/pages/index/index.js',
+        staff: './src/app/pages/staff/staff.js',
         baike: './src/app/pages/baike/baike.js',
-        journal: './src/app/pages/journal/journal.js'
+        journal: './src/app/pages/journal/journal.js',
+        building: './src/app/pages/building/building.js'
     },
     output: {
         path: path.join(__dirname, 'dist'),

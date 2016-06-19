@@ -1,6 +1,7 @@
 /**
- * Created by lishoubo on 16/5/21.
+ * Created by lishoubo on 16/6/7.
  */
+
 $(function () {
     var result = {
         data: {
@@ -11,7 +12,7 @@ $(function () {
     };
 
     new Vue({
-        el: '#jl-staff-container',
+        el: '#jl-building-container',
         data: result,
         created: function () {
             this.go_to_page(1);
@@ -36,11 +37,11 @@ $(function () {
         }
     });
     new Vue({
-        el: '#add-staff-modal',
+        el: '#add-building-modal',
         methods: {
-            add_staff: function () {
-                var data = $('#add-staff-form').serializeFormJSON();
-                this._post("/api/admin/staffs",
+            add_building: function () {
+                var data = $('#add-building-form').serializeFormJSON();
+                this._post("/api/admin/building",
                     data,
                     function (response) {
                         if (response.success) {
@@ -62,3 +63,4 @@ $(function () {
         }
     });
 });
+

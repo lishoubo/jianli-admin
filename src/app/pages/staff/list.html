@@ -1,4 +1,8 @@
-<div id="jd-staff-container">
+{% extends '../../layout/base_layout.html' %}
+
+{% block content %}
+
+<div id="jl-staff-container">
 
     <div class="row" xmlns:v-bind="http://www.w3.org/1999/xhtml">
         <div class="col-sm-2">
@@ -136,68 +140,10 @@
 
     </div>
 </div>
-<script>
-    $(function () {
-        var result = {
-            data: {
-                page: 0,
-                pageSize: 10,
-                items: []
-            }
-        };
 
-        new Vue({
-            el: '#jd-staff-container',
-            data: result,
-            created: function () {
-                this.go_to_page(1);
-            },
-            methods: {
-                go_to_page: function (page) {
-                    if (!page) {
-                        page = 1;
-                    }
-                    if (page < 1 || (!!result.data.pageTotal && page >= result.data.pageTotal)) {
-                        return
-                    }
-                    this._get("/api/admin/staffs",
-                            {'page': page, 'pageSize': 10},
-                            function (response) {
-                                result.data = response.data;
-                            }, function (error) {
-                                console.log(error);
-                            })
-                }
+{% endblock %}
 
-            }
-        });
-        new Vue({
-            el: '#add-staff-modal',
-            methods: {
-                add_staff: function () {
-                    var data = $('#add-staff-form').serializeFormJSON();
-                    console.log(data);
-                    this._post("/api/admin/staffs",
-                            data,
-                            function (response) {
-                                if (response.success) {
-                                    window.location.reload();
-                                } else {
-                                    bootbox.alert({
-                                                title: "添加失败",
-                                                message: response.message,
-                                                closable: true
-                                            }
-                                    );
-                                }
-                            }, function (error) {
-                                console.log(error)
-                            }
-                    )
-
-                }
-            }
-        });
-    });
-
-</script>
+{% block footer %}
+{% parent %}
+<script src="/js/staff.page.js"></script>
+{% endblock %}
