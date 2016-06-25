@@ -24,7 +24,7 @@ jlApp.config(['$routeProvider', function ($routeProvider) {
             controller: 'staffController'
         })
         .when('/building', {
-            templateUrl: '/pages/building/list.html',
+            templateUrl: '/pages/building/building.html',
             controller: 'buildingController'
         })
         .when('/journal', {
@@ -174,16 +174,15 @@ jlApp.controller('staffController', ['$scope', '$http', 'config', function ($sco
 }]);
 
 jlApp.controller('buildingController', ['$scope', '$http', 'config', function ($scope, $http, config) {
-    var result = {
+    $scope.result = {
         data: {
             page: 0,
             pageSize: 10,
             items: []
         }
-    }, form = {};
+    };
+    $scope.form = {"address": {"distinct": "西湖区"}};
 
-    $scope.result = result;
-    $scope.form = form;
     $scope.go_to_page = function (page) {
         if (!page) {
             page = 1;
@@ -197,13 +196,38 @@ jlApp.controller('buildingController', ['$scope', '$http', 'config', function ($
             console.log(error);
         });
     };
+    $scope.open_update_building = function (id) {
+        $http.get(
+            config.host + "/api/admin/building/queryById?id=" + id
+        ).success(function (response) {
+            if (response.success) {
+                $scope.form = response.data;
+                $("#update-building-modal").modal("show");
+            } else {
+                bootbox.alert({
+                        title: "查询失败", message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "查询失败", message: error
+                }
+            );
+
+        });
+    };
+    $scope.open_add_building = function () {
+        $scope.form = {"address": {"district": "西湖区"}};
+        $("#add-building-modal").modal("show");
+    };
     $scope.add_building = function () {
         $http.post(
             config.host + "/api/admin/building",
             $scope.form
         ).success(function (response) {
             if (response.success) {
-                $(".modal").modal("hide");
+                $("#add-building-modal").modal("hide");
                 $scope.go_to_page(1);
             } else {
                 bootbox.alert({
@@ -215,6 +239,52 @@ jlApp.controller('buildingController', ['$scope', '$http', 'config', function ($
             }
         }).error(function (error) {
             console.log(error);
+        });
+    };
+    $scope.update_building = function () {
+        $http.post(
+            config.host + "/api/admin/building/update",
+            $scope.form
+        ).success(function (response) {
+            if (response.success) {
+                $("#update-building-modal").modal("hide");
+                $scope.go_to_page(1);
+            } else {
+                bootbox.alert({
+                        title: "更新失败",
+                        message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "更新失败",
+                    message: error
+                }
+            );
+        });
+    };
+    $scope.delete_building = function(id) {
+        bootbox.confirm("确定删除吗?", function (confirmed) {
+            if (confirmed) {
+                $http.post(
+                    config.host + "/api/admin/building/delete?id=" + id
+                ).success(function (response) {
+                    if (response.success) {
+                        $scope.go_to_page(1);
+                    } else {
+                        bootbox.alert({
+                                title: "删除失败", message: response.message, closable: true
+                            }
+                        );
+                    }
+                }).error(function (error) {
+                    bootbox.alert({
+                            title: "删除失败", message: error, closable: true
+                        }
+                    );
+                });
+            }
         });
     };
     $scope.go_to_page(1);
