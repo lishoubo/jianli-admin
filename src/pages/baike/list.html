@@ -1,11 +1,6 @@
-{% extends '../../layout/base_layout.html' %}
-
-{% block content %}
-
-
 <div id="jd-baike-container">
 
-    <div class="row" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+    <div class="row">
         <div class="col-sm-10 col-sm-offset-2">
             <div class="form-inline" style="float: right">
                 <div class="form-group">
@@ -29,13 +24,17 @@
                     <th class="sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1"
                         aria-sort="ascending" aria-label="Name: activate to sort column descending"
                         style="width: 110px;">
-                        所属工程
+                        封面
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1"
-                        aria-label="Position: activate to sort column ascending" style="width: 100px;">工程师
+                        aria-label="Position: activate to sort column ascending" style="width: 100px;">标题
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1"
                         aria-label="Age: activate to sort column ascending" style="width: 44px;">阶段
+                    </th>
+                    <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">作者
+                    </th>
+                    <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">浏览量
                     </th>
                     <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">更新时间
                     </th>
@@ -47,19 +46,50 @@
 
                 <tr role="row">
                     <td class="sorting_1">
-                        <h6>富力悦居</h6>
+                        <img src="/images/index-slider-01.png" style="width: 110px; height: 110px">
                     </td>
                     <td class="sorting_2">
-                        <p>王建国</p>
+                        <h6>最满意的精装服务最满意的精装服务最满意的精装服务最满意的精装服务</h6>
                     </td>
                     <td class="sorting_3">
                         <p>水电阶段</p>
                     </td>
                     <td class="sorting_3">
+                        <p>王健国</p>
+                    </td>
+                    <td class="sorting_3">
+                        <p>1023</p>
+                    </td>
+                    <td class="sorting_3">
                         <p>2016-4-3</p>
                     </td>
                     <td>
-                        <a href="#" onclick="show_journal_content()">内容</a>
+                        <a href="#" onclick="show_baike_content()">内容</a>
+                        <a href="#">编辑</a>
+                        <a href="#">删除</a>
+                    </td>
+                </tr>
+                <tr role="row">
+                    <td class="sorting_1">
+                        <img src="/images/index-slider-01.png" style="width: 110px; height: 110px">
+                    </td>
+                    <td class="sorting_2">
+                        <h6>最满意的精装服务最满意的精装服务最满意的精装服务最满意的精装服务</h6>
+                    </td>
+                    <td class="sorting_3">
+                        <p>水电阶段</p>
+                    </td>
+                    <td class="sorting_3">
+                        <p>王健国</p>
+                    </td>
+                    <td class="sorting_3">
+                        <p>1023</p>
+                    </td>
+                    <td class="sorting_3">
+                        <p>2016-4-3</p>
+                    </td>
+                    <td>
+                        <a href="#" onclick="show_baike_content()">内容</a>
                         <a href="#">编辑</a>
                         <a href="#">删除</a>
                     </td>
@@ -72,19 +102,19 @@
         <div class="col-md-12">
             <div class="dataTables_paginate paging_simple_numbers" style="float: right">
                 <ul class="pagination pagination-sm">
-                    <li class="paginate_button previous" v-bind:class="{ 'disabled': data.page === 1 }">
-                        <a href="#" v-on:click="go_to_page(data.page - 1)">上一页</a>
+                    <li class="paginate_button previous" ng-class="{ 'disabled': data.page === 1 }">
+                        <a href="#" ng-click="go_to_page(data.page - 1)">上一页</a>
                     </li>
                     <li class="paginate_button"
                         v-for="p in 2"
-                        v-bind:class="{ 'active': p + 1 == 1 }"
-                        v-on:click="go_to_page(p + 1)">
+                        ng-class="{ 'active': p + 1 == 1 }"
+                        ng-click="go_to_page(p + 1)">
                         <a href="#">
                             1
                         </a>
                     </li>
-                    <li class="paginate_button next" v-bind:class="{ 'disabled': true }">
-                        <a href="#" v-on:click="go_to_page(data.page + 1)">下一页</a></li>
+                    <li class="paginate_button next" ng-class="{ 'disabled': true }">
+                        <a href="#" ng-click="go_to_page(data.page + 1)">下一页</a></li>
                 </ul>
             </div>
         </div>
@@ -93,10 +123,10 @@
 
 
 <script>
-    function show_journal_content() {
+    function show_baike_content() {
         bootbox.dialog({
             message: "<h4>Title</h4>",
-            title: "监理日记内容",
+            title: "百科内容",
             buttons: {
                 success: {
                     label: "编辑",
@@ -105,7 +135,9 @@
             }
         });
     }
+    $('#baike-editor').summernote({
+        lang: 'zh-CN',
+        height: 350
+    });
 
 </script>
-
-{% endblock %}

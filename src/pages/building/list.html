@@ -1,11 +1,6 @@
-{% extends '../../layout/base_layout.html' %}
-
-{% block content %}
-
-
 <div id="jl-building-container">
 
-    <div class="row" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+    <div class="row">
         <div class="col-sm-2">
             <button type="button" class="btn btn-primary btn-small" data-toggle="modal"
                     data-target="#add-building-modal">
@@ -13,7 +8,7 @@
             </button>
         </div>
 
-        <div class="col-sm-10 col-sm-offset-2">
+        <div class="col-sm-10">
             <div class="form-inline" style="float: right">
                 <div class="form-group">
                     <label for="search-starff">搜索</label>
@@ -46,9 +41,9 @@
                     </th>
                     <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">监理工程师
                     </th>
-                    <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">阶段
+                    <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">当前阶段
                     </th>
-                    <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">最近巡查时间
+                    <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">创建时间
                     </th>
                     <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">操作
                     </th>
@@ -56,31 +51,31 @@
                 </thead>
                 <tbody>
 
-                <tr role="row">
+                <tr role="row" ng-repeat="building in result.data.items">
                     <td class="sorting_1">
-                        <h6>富力悦居十号工程</h6>
+                        {{ building.name }}
                     </td>
                     <td class="sorting_2">
-                        <p>余杭区</p>
+                        {{ building.distinct }}
                     </td>
                     <td class="sorting_3">
-                        <p>春风里</p>
+                        {{ building.address }}
                     </td>
-                    <td class="sorting_3">
-                        <p>王健国</p>
+                    <td class="sorting_4">
+                        {{ building.staffName }}
                     </td>
-                    <td class="sorting_3">
-                        <p>水电</p>
+                    <td class="sorting_5">
+                        {{ building.procedure }}
                     </td>
-                    <td class="sorting_3">
-                        <p>2016-4-3</p>
+                    <td class="sorting_6">
+                        {{ building.createTime }}
                     </td>
                     <td>
-                        <a href="#">更新</a>
-                        <a href="#">巡查</a>
+                        <a href="#">编辑</a>
                         <a href="#">删除</a>
                     </td>
                 </tr>
+
                 </tbody>
             </table>
         </div>
@@ -89,19 +84,19 @@
         <div class="col-md-12">
             <div class="dataTables_paginate paging_simple_numbers" style="float: right">
                 <ul class="pagination pagination-sm">
-                    <li class="paginate_button previous" v-bind:class="{ 'disabled': data.page === 1 }">
-                        <a href="#" v-on:click="go_to_page(data.page - 1)">上一页</a>
+                    <li class="paginate_button previous" ng-class="{ 'disabled': result.data.page === 1 }">
+                        <a href="#" ng-click="go_to_page(data.page - 1)">上一页</a>
                     </li>
                     <li class="paginate_button"
-                        v-for="p in 2"
-                        v-bind:class="{ 'active': p + 1 == 1 }"
-                        v-on:click="go_to_page(p + 1)">
-                        <a href="#">
-                            1
+                        ng-repeat="p in result.data.pageTotal | range"
+                        ng-class="{ 'active': p + 1 == result.data.page }">
+                        <a href="" ng-click="go_to_page(p + 1)">
+                            {{ p + 1 }}
                         </a>
                     </li>
-                    <li class="paginate_button next" v-bind:class="{ 'disabled': true }">
-                        <a href="#" v-on:click="go_to_page(data.page + 1)">下一页</a></li>
+                    <li class="paginate_button next"
+                        ng-class="{ 'disabled':result.data.page === result.data.pageTotal }">
+                        <a href="" ng-click="go_to_page(data.page + 1)">下一页</a></li>
                 </ul>
             </div>
         </div>
@@ -121,12 +116,11 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>名称</label>
-                            <input type="text" class="form-control" name="name" placeholder="名称"
-                                   v-validate:name="['required']">
+                            <input type="text" class="form-control" ng-model="form.name" placeholder="名称" required>
                         </div>
                         <div class="form-group">
                             <label>所在地</label>
-                            <select class="form-control" name="distinct">
+                            <select class="form-control" ng-model="form.distinct">
                                 <option>西湖区</option>
                                 <option>上城区</option>
                                 <option>下城区</option>
@@ -137,20 +131,16 @@
                         </div>
                         <div class="form-group">
                             <label>地址</label>
-                            <input type="text" class="form-control" name="qualification" placeholder="工程地址">
+                            <input type="text" class="form-control" ng-model="form.address" placeholder="工程地址" required>
                         </div>
                         <div class="form-group">
                             <label>监理工程师</label>
-                            <input type="text" class="form-control" name="professional" placeholder="工程师名字">
-                        </div>
-                        <div class="alert-danger">
-                            <p v-if="$buildingValidator.name.required">填写工程名称</p>
+                            <input type="text" class="form-control" ng-model="form.staffName" placeholder="工程师名字">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                        <a class="btn btn-default btn-small" href="#"
-                           v-if="$buildingValidator.valid" v-on:click="add_building">录入</a>
+                        <input type="submit" class="btn btn-default btn-small" value="录入" ng-click="add_building()"/>
                     </div>
                 </form>
 
@@ -159,10 +149,3 @@
 
     </div>
 </div>
-
-{% endblock %}
-
-{% block footer %}
-{% parent %}
-<script src="/js/building.page.js"></script>
-{% endblock %}

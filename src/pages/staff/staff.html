@@ -1,10 +1,6 @@
-{% extends '../../layout/base_layout.html' %}
-
-{% block content %}
-
 <div id="jl-staff-container">
 
-    <div class="row" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+    <div class="row">
         <div class="col-sm-2">
             <button type="button" class="btn btn-primary btn-small" data-toggle="modal"
                     data-target="#add-staff-modal">
@@ -51,18 +47,18 @@
                 </thead>
                 <tbody>
 
-                <tr role="row" v-for="staff in data.items">
+                <tr role="row" ng-repeat="staff in result.data.items">
                     <td class="sorting_1">
-                        {% raw %}{{ staff.name }}{% endraw %}
+                        {{ staff.name }}
                     </td>
                     <td class="sorting_2">
-                        {% raw %}{{ staff.grade }}{% endraw %}
+                        {{ staff.grade }}
                     </td>
                     <td class="sorting_3">
-                        {% raw %}{{ staff.qualification }}{% endraw %}
+                        {{ staff.qualification }}
                     </td>
                     <td class="sorting_4">
-                        {% raw %}{{ staff.professional }}{% endraw %}
+                        {{ staff.professional }}
                     </td>
                     <td>
                         <a href="#">编辑</a>
@@ -77,19 +73,18 @@
         <div class="col-md-12">
             <div class="dataTables_paginate paging_simple_numbers" style="float: right">
                 <ul class="pagination pagination-sm">
-                    <li class="paginate_button previous" v-bind:class="{ 'disabled': data.page === 1 }">
-                        <a href="#" v-on:click="go_to_page(data.page - 1)">上一页</a>
+                    <li class="paginate_button previous" ng-class="{ 'disabled': result.data.page === 1 }">
+                        <a href="#" ng-click="go_to_page(data.page - 1)">上一页</a>
                     </li>
                     <li class="paginate_button"
-                        v-for="p in data.pageTotal - 1"
-                        v-bind:class="{ 'active': p + 1 == data.page }"
-                        v-on:click="go_to_page(p + 1)">
-                        <a href="#">
-                            {% raw %}{{ p + 1 }}{% endraw %}
+                        ng-repeat="p in result.data.pageTotal | range"
+                        ng-class="{ 'active': p + 1 == result.data.page }">
+                        <a href="" ng-click="go_to_page(p + 1)">
+                            {{ p + 1 }}
                         </a>
                     </li>
-                    <li class="paginate_button next" v-bind:class="{ 'disabled': data.page === data.pageTotal }">
-                        <a href="#" v-on:click="go_to_page(data.page + 1)">下一页</a></li>
+                    <li class="paginate_button next" ng-class="{ 'disabled': data.page === data.pageTotal }">
+                        <a href="" ng-click="go_to_page(data.page + 1)">下一页</a></li>
                 </ul>
             </div>
         </div>
@@ -109,29 +104,24 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>姓名</label>
-                            <input type="text" class="form-control" name="name" placeholder="姓名"
-                                   v-validate:name="['required']">
+                            <input type="text" class="form-control" name="name" placeholder="姓名" ng-model="form.name" required>
                         </div>
                         <div class="form-group">
                             <label>等级</label>
-                            <input type="text" class="form-control" name="grade" placeholder="等级">
+                            <input type="text" class="form-control" name="grade" ng-model="form.grade" placeholder="等级">
                         </div>
                         <div class="form-group">
                             <label>资历</label>
-                            <input type="text" class="form-control" name="qualification" placeholder="资历">
+                            <input type="text" class="form-control" name="qualification" ng-model="form.qualification" placeholder="资历">
                         </div>
                         <div class="form-group">
                             <label>专业</label>
-                            <input type="text" class="form-control" name="professional" placeholder="专业">
-                        </div>
-                        <div class="alert-danger">
-                            <p v-if="$staffValidator.name.required">填写姓名</p>
+                            <input type="text" class="form-control" name="professional" ng-model="form.professional" placeholder="专业">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                        <a id="add_staff_btn" class="btn btn-default btn-small" href="#"
-                           v-if="$staffValidator.valid" v-on:click="add_staff">录入</a>
+                        <input type="submit" class="btn btn-default btn-small" value="录入" ng-click="add_staff()"/>
                     </div>
                 </form>
 
@@ -140,10 +130,3 @@
 
     </div>
 </div>
-
-{% endblock %}
-
-{% block footer %}
-{% parent %}
-<script src="/js/staff.page.js"></script>
-{% endblock %}

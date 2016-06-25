@@ -1,5 +1,5 @@
 {
-  "name": "miss",
+  "name": "jianli-admin",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,24 +9,13 @@
   "author": "lishoubo",
   "license": "ISC",
   "devDependencies": {
-    "browser-sync": "^2.12.8",
-    "css-loader": "^0.23.1",
-    "exports-loader": "^0.6.3",
-    "extract-text-webpack-plugin": "^1.0.1",
-    "file-loader": "^0.8.5",
-    "gulp-concat": "^2.6.0",
-    "gulp-less": "^3.1.0",
-    "gulp-minify-html": "^1.0.6",
-    "gulp-swig": "^0.8.0",
-    "gulp-webpack": "^1.5.0",
-    "html-loader": "^0.4.3",
-    "html-webpack-plugin": "^2.17.0",
-    "jade-loader": "^0.8.0",
-    "less-loader": "^2.2.3",
-    "style-loader": "^0.13.1",
-    "swig": "^1.4.2",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.13.0",
-    "webpack-dev-server": "^1.14.1"
+    "grunt": "~0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-concat": "^0.4.0",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-cssmin": "^1.0.1",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-uglify": "~0.2.1",
+    "grunt-contrib-watch": "^1.0.0"
   }
 }
