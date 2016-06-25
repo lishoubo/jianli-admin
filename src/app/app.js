@@ -46,34 +46,41 @@ jlApp.config(['$routeProvider', function ($routeProvider) {
 }]);
 
 
-
 jlApp.controller('staffController', ['$scope', '$http', 'config', function ($scope, $http, config) {
-    var result = {
+    $scope.result = {
         data: {
             page: 0,
             pageSize: 10,
             items: []
         }
-    }, form = {};
+    };
+    $scope.form = {};
 
-    $scope.result = result;
-    $scope.form = form;
     $scope.go_to_page = function (page) {
         if (!page) {
             page = 1;
-        }
-        if (page < 1 || (!!$scope.result.data.pageTotal && page >= $scope.result.data.pageTotal)) {
-            return;
         }
         $http.get(
             config.host + "/api/admin/staffs",
             {'params': {'page': page, 'pageSize': 10}}
         ).success(function (response) {
-            $scope.result.data = response.data;
+            console.log(response);
+            if (response.success) {
+                $scope.result.data = response.data;
+            } else {
+                bootbox.alert({
+                        title: "查询失败", message: response.message
+                    }
+                );
+            }
         }).error(function (error) {
-            console.log(error);
+            bootbox.alert({
+                    title: "查询失败", message: error
+                }
+            );
         });
     };
+
     $scope.add_staff = function () {
         $http.post(
             config.host + "/api/admin/staffs",
@@ -92,6 +99,75 @@ jlApp.controller('staffController', ['$scope', '$http', 'config', function ($sco
             }
         }).error(function (error) {
             console.log(error);
+        });
+    };
+    $scope.delete_staff = function (id) {
+        bootbox.confirm("确定删除吗?", function (confirmed) {
+            if (confirmed) {
+                $http.post(
+                    config.host + "/api/admin/staffs/delete?id=" + id
+                ).success(function (response) {
+                    if (response.success) {
+                        $scope.go_to_page(1);
+                    } else {
+                        bootbox.alert({
+                                title: "删除失败", message: response.message, closable: true
+                            }
+                        );
+                    }
+                }).error(function (error) {
+                    bootbox.alert({
+                            title: "删除失败", message: error, closable: true
+                        }
+                    );
+                });
+            }
+        });
+    };
+    $scope.update_staff = function () {
+        $http.post(
+            config.host + "/api/admin/staffs/update",
+            $scope.form
+        ).success(function (response) {
+            if (response.success) {
+                $("#update-staff-modal").modal("hide");
+                $scope.go_to_page(1);
+            } else {
+                bootbox.alert({
+                        title: "更新失败", message: response.message, closable: true
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "更新失败", message: error, closable: true
+                }
+            );
+        });
+    };
+    $scope.open_add_form = function () {
+        $scope.form = {};
+        $("#add-staff-modal").modal("show");
+    };
+    $scope.open_update_form = function (id) {
+        $http.get(
+            config.host + "/api/admin/staffs/queryById?id=" + id
+        ).success(function (response) {
+            if (response.success) {
+                $scope.form = response.data;
+                $("#update-staff-modal").modal("show");
+            } else {
+                bootbox.alert({
+                        title: "查询失败", message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "查询失败", message: error
+                }
+            );
+
         });
     };
     $scope.go_to_page(1);
