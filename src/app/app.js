@@ -264,7 +264,7 @@ jlApp.controller('buildingController', ['$scope', '$http', 'config', function ($
             );
         });
     };
-    $scope.delete_building = function(id) {
+    $scope.delete_building = function (id) {
         bootbox.confirm("确定删除吗?", function (confirmed) {
             if (confirmed) {
                 $http.post(
@@ -294,8 +294,34 @@ jlApp.controller('journalController', ['$scope', function ($scope) {
     $scope.message = 'Look! I am an about page.';
 }]);
 
-jlApp.controller('baikeController', ['$scope', function ($scope) {
-    $scope.message = 'Look! I am an about page.';
+jlApp.controller('baikeController', ['$scope', '$http', '$location', 'config', function ($scope, $http, $location, config) {
+    $scope.form = {"procedure": "PREPARE"};
+
+    $scope.add_baike = function () {
+        var content = $('#baike-editor').summernote('code');
+        $scope.form.content = content;
+        $http.post(
+            config.host + "/api/admin/baike",
+            $scope.form
+        ).success(function (response) {
+            if (response.success) {
+                $location.path("/baike");
+            } else {
+                bootbox.alert({
+                        title: "添加失败",
+                        message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "添加失败",
+                    message: error
+                }
+            );
+        });
+    };
+
 }]);
 
 jlApp.controller('contactController', ['$scope', function ($scope) {
