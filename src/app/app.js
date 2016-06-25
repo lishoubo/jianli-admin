@@ -31,7 +31,11 @@ jlApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: '/pages/journal/journal.html',
             controller: 'journalController'
         })
-        .when('/journal/new', {
+        .when('/journal/form', {
+            templateUrl: '/pages/journal/form.html',
+            controller: 'journalController'
+        })
+        .when('/journal/form/:id', {
             templateUrl: '/pages/journal/form.html',
             controller: 'journalController'
         })
@@ -294,10 +298,6 @@ jlApp.controller('buildingController', ['$scope', '$http', 'config', function ($
     $scope.go_to_page(1);
 }]);
 
-jlApp.controller('journalController', ['$scope', function ($scope) {
-    $scope.message = 'Look! I am an about page.';
-}]);
-
 jlApp.controller('baikeController', ['$scope', '$http', '$location', '$routeParams', 'config', function ($scope, $http, $location, $routeParams, config) {
     $scope.form = {"procedure": "PREPARE"};
     $scope.result = {
@@ -453,6 +453,176 @@ jlApp.controller('baikeController', ['$scope', '$http', '$location', '$routePara
     }
 }]);
 
-jlApp.controller('contactController', ['$scope', function ($scope) {
-    $scope.message = 'Contact us! JK. This is just a demo.';
+jlApp.controller('journalController', ['$scope', '$http', '$route', '$location', '$routeParams', 'config', function ($scope, $http, $route, $location, $routeParams, config) {
+    $scope.buildings = [];
+    $scope.form = {procedure: 'PREPARE'};
+    $scope.result = {
+        data: {
+            page: 0,
+            pageSize: 10,
+            items: []
+        }
+    };
+
+    $scope.get_buildings = function () {
+        $http.get(
+            config.host + "/api/admin/building",
+            {'params': {'page': 1, 'pageSize': 100}}
+        ).success(function (response) {
+            $scope.buildings = response.data.items;
+            console.log($scope.buildings);
+        }).error(function (error) {
+            console.log(error);
+        });
+    };
+    $scope.get_journal = function (id) {
+        $http.get(
+            config.host + "/api/admin/journal/queryById?id=" + id
+        ).success(function (response) {
+            if (response.success) {
+                console.log(response);
+                $scope.form = {
+                    staff: response.data.staff.name,
+                    building:response.data.building.name,
+                    cover:response.data.cover,
+                    procedure:response.data.procedure,
+                    content:response.data.content
+                };
+                var div = document.createElement('div');
+                div.innerHTML = $scope.form.content;
+                $('#journal-editor').summernote("insertNode", div);
+            } else {
+                bootbox.alert({
+                        title: "查询失败", message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "查询失败", message: error
+                }
+            );
+
+        });
+    };
+    $scope.add_journal = function () {
+        var content = $('#journal-editor').summernote('code');
+        $scope.form.content = content;
+        $http.post(
+            config.host + "/api/admin/journal",
+            $scope.form
+        ).success(function (response) {
+            if (response.success) {
+                $location.path("/journal");
+            } else {
+                bootbox.alert({
+                        title: "添加失败",
+                        message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "添加失败",
+                    message: error
+                }
+            );
+        });
+    };
+    $scope.update_journal = function () {
+        var content = $('#journal-editor').summernote('code');
+        $scope.form.content = content;
+        console.log($scope.form);
+        $http.post(
+            config.host + "/api/admin/journal/update",
+            $scope.form
+        ).success(function (response) {
+            if (response.success) {
+                $location.path("/journal");
+            } else {
+                bootbox.alert({
+                        title: "更新失败",
+                        message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "更新失败",
+                    message: error
+                }
+            );
+        });
+    };
+    $scope.delete_journal = function (id) {
+        bootbox.confirm("确定删除吗?", function (confirmed) {
+            if (confirmed) {
+                $http.post(
+                    config.host + "/api/admin/journal/delete?id=" + id
+                ).success(function (response) {
+                    if (response.success) {
+                        $scope.go_to_page(1);
+                    } else {
+                        bootbox.alert({
+                                title: "删除失败", message: response.message, closable: true
+                            }
+                        );
+                    }
+                }).error(function (error) {
+                    bootbox.alert({
+                            title: "删除失败", message: error, closable: true
+                        }
+                    );
+                });
+            }
+        });
+
+    };
+    $scope.show_content = function (id) {
+        $http.get(
+            config.host + "/api/admin/journal/queryById?id=" + id
+        ).success(function (response) {
+            if (response.success) {
+                console.log(response);
+                bootbox.dialog({
+                    title: "监理日志内容",
+                    message: response.data.content,
+                    show: true
+                });
+
+            } else {
+                bootbox.alert({
+                        title: "查询失败", message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "查询失败", message: error
+                }
+            );
+
+        });
+    };
+    $scope.go_to_page = function (page) {
+        if (!page) {
+            page = 1;
+        }
+        $http.get(
+            config.host + "/api/admin/journal",
+            {'params': {'page': page, 'pageSize': 10}}
+        ).success(function (response) {
+            $scope.result.data = response.data;
+        }).error(function (error) {
+            console.log(error);
+        });
+    };
+    $scope.go_to_page(1);
+    if ($routeParams.id) {
+        $scope.get_journal($routeParams.id);
+    }
+    if ($route.current.$$route.originalPath.indexOf("form") != -1) {
+        $scope.get_buildings();
+    }
+
 }]);

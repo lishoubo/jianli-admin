@@ -24,13 +24,15 @@
                     <th class="sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1"
                         aria-sort="ascending" aria-label="Name: activate to sort column descending"
                         style="width: 110px;">
-                        所属工程
+                        封面
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1"
-                        aria-label="Position: activate to sort column ascending" style="width: 100px;">工程师
+                        aria-label="Position: activate to sort column ascending" style="width: 100px;">所属工程
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1"
-                        aria-label="Age: activate to sort column ascending" style="width: 44px;">阶段
+                        aria-label="Age: activate to sort column ascending" style="width: 44px;">监理工程师
+                    </th>
+                    <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">位于阶段
                     </th>
                     <th rowspan="1" colspan="1" aria-label="操作" style="width: 44px;">更新时间
                     </th>
@@ -40,23 +42,26 @@
                 </thead>
                 <tbody>
 
-                <tr role="row">
+                <tr role="row" ng-repeat="item in result.data.items">
                     <td class="sorting_1">
-                        <h6>富力悦居</h6>
+                        <img ng-src="{{item.cover}}" style="width: 110px; height: 110px">
                     </td>
                     <td class="sorting_2">
-                        <p>王建国</p>
+                        {{ item.building.name }}
                     </td>
                     <td class="sorting_3">
-                        <p>水电阶段</p>
+                        {{ item.staff.name }}
                     </td>
-                    <td class="sorting_3">
-                        <p>2016-4-3</p>
+                    <td class="sorting_4">
+                        {{ item.procedure }}
+                    </td>
+                    <td class="sorting_6">
+                        {{ item.updateDate | date:'yyyy-MM-dd HH:mm:ss'}}
                     </td>
                     <td>
-                        <a href="#" onclick="show_journal_content()">内容</a>
-                        <a href="#">编辑</a>
-                        <a href="#">删除</a>
+                        <a href="" ng-click="show_content(item._id)">查看</a>
+                        <a href="" ng-href="#/journal/form/{{item._id}}">编辑</a>
+                        <a href="" ng-click="delete_journal(item._id)">删除</a>
                     </td>
                 </tr>
                 </tbody>
