@@ -39,7 +39,11 @@ jlApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: '/pages/baike/list.html',
             controller: 'baikeController'
         })
-        .when('/baike/new', {
+        .when('/baike/form', {
+            templateUrl: '/pages/baike/form.html',
+            controller: 'baikeController'
+        })
+        .when('/baike/form/:id', {
             templateUrl: '/pages/baike/form.html',
             controller: 'baikeController'
         });
@@ -294,8 +298,39 @@ jlApp.controller('journalController', ['$scope', function ($scope) {
     $scope.message = 'Look! I am an about page.';
 }]);
 
-jlApp.controller('baikeController', ['$scope', '$http', '$location', 'config', function ($scope, $http, $location, config) {
+jlApp.controller('baikeController', ['$scope', '$http', '$location', '$routeParams', 'config', function ($scope, $http, $location, $routeParams, config) {
     $scope.form = {"procedure": "PREPARE"};
+    $scope.result = {
+        data: {
+            page: 0,
+            pageSize: 10,
+            items: []
+        }
+    };
+
+    $scope.get_baike = function (id) {
+        $http.get(
+            config.host + "/api/admin/baike/queryById?id=" + id
+        ).success(function (response) {
+            if (response.success) {
+                $scope.form = response.data;
+                var div = document.createElement('div');
+                div.innerHTML = $scope.form.content;
+                $('#baike-editor').summernote("insertNode", div);
+            } else {
+                bootbox.alert({
+                        title: "查询失败", message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "查询失败", message: error
+                }
+            );
+
+        });
+    };
 
     $scope.add_baike = function () {
         var content = $('#baike-editor').summernote('code');
@@ -322,6 +357,100 @@ jlApp.controller('baikeController', ['$scope', '$http', '$location', 'config', f
         });
     };
 
+    $scope.update_baike = function () {
+        var content = $('#baike-editor').summernote('code');
+        $scope.form.content = content;
+        console.log($scope.form);
+        $http.post(
+            config.host + "/api/admin/baike/update",
+            $scope.form
+        ).success(function (response) {
+            if (response.success) {
+                $location.path("/baike");
+            } else {
+                bootbox.alert({
+                        title: "更新失败",
+                        message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "更新失败",
+                    message: error
+                }
+            );
+        });
+    };
+
+    $scope.delete_baike = function (id) {
+        bootbox.confirm("确定删除吗?", function (confirmed) {
+            if (confirmed) {
+                $http.post(
+                    config.host + "/api/admin/baike/delete?id=" + id
+                ).success(function (response) {
+                    if (response.success) {
+                        $scope.go_to_page(1);
+                    } else {
+                        bootbox.alert({
+                                title: "删除失败", message: response.message, closable: true
+                            }
+                        );
+                    }
+                }).error(function (error) {
+                    bootbox.alert({
+                            title: "删除失败", message: error, closable: true
+                        }
+                    );
+                });
+            }
+        });
+
+    };
+
+    $scope.show_content = function (id) {
+        $http.get(
+            config.host + "/api/admin/baike/queryById?id=" + id
+        ).success(function (response) {
+            if (response.success) {
+                console.log(response);
+                bootbox.dialog({
+                    title: "百科内容",
+                    message: response.data.content,
+                    show: true
+                });
+
+            } else {
+                bootbox.alert({
+                        title: "查询失败", message: response.message
+                    }
+                );
+            }
+        }).error(function (error) {
+            bootbox.alert({
+                    title: "查询失败", message: error
+                }
+            );
+
+        });
+    };
+    $scope.go_to_page = function (page) {
+        if (!page) {
+            page = 1;
+        }
+        $http.get(
+            config.host + "/api/admin/baike",
+            {'params': {'page': page, 'pageSize': 10}}
+        ).success(function (response) {
+            $scope.result.data = response.data;
+        }).error(function (error) {
+            console.log(error);
+        });
+    };
+    $scope.go_to_page(1);
+    if ($routeParams.id) {
+        $scope.get_baike($routeParams.id);
+    }
 }]);
 
 jlApp.controller('contactController', ['$scope', function ($scope) {

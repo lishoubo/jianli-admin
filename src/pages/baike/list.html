@@ -44,54 +44,29 @@
                 </thead>
                 <tbody>
 
-                <tr role="row">
+                <tr role="row" ng-repeat="item in result.data.items">
                     <td class="sorting_1">
-                        <img src="/images/index-slider-01.png" style="width: 110px; height: 110px">
+                        <img ng-src="{{item.cover}}" style="width: 110px; height: 110px">
                     </td>
                     <td class="sorting_2">
-                        <h6>最满意的精装服务最满意的精装服务最满意的精装服务最满意的精装服务</h6>
+                        {{ item.title }}
                     </td>
                     <td class="sorting_3">
-                        <p>水电阶段</p>
+                        {{ item.procedure }}
                     </td>
-                    <td class="sorting_3">
-                        <p>王健国</p>
+                    <td class="sorting_4">
+                        {{ item.author }}
                     </td>
-                    <td class="sorting_3">
-                        <p>1023</p>
+                    <td class="sorting_5">
+                        {{ item.pv }}
                     </td>
-                    <td class="sorting_3">
-                        <p>2016-4-3</p>
+                    <td class="sorting_6">
+                        {{ item.updateDate | date:'yyyy-MM-dd HH:mm:ss'}}
                     </td>
                     <td>
-                        <a href="#" onclick="show_baike_content()">内容</a>
-                        <a href="#">编辑</a>
-                        <a href="#">删除</a>
-                    </td>
-                </tr>
-                <tr role="row">
-                    <td class="sorting_1">
-                        <img src="/images/index-slider-01.png" style="width: 110px; height: 110px">
-                    </td>
-                    <td class="sorting_2">
-                        <h6>最满意的精装服务最满意的精装服务最满意的精装服务最满意的精装服务</h6>
-                    </td>
-                    <td class="sorting_3">
-                        <p>水电阶段</p>
-                    </td>
-                    <td class="sorting_3">
-                        <p>王健国</p>
-                    </td>
-                    <td class="sorting_3">
-                        <p>1023</p>
-                    </td>
-                    <td class="sorting_3">
-                        <p>2016-4-3</p>
-                    </td>
-                    <td>
-                        <a href="#" onclick="show_baike_content()">内容</a>
-                        <a href="#">编辑</a>
-                        <a href="#">删除</a>
+                        <a href="" ng-click="show_content(item._id)">查看</a>
+                        <a href="" ng-href="#/baike/form/{{item._id}}">编辑</a>
+                        <a href="" ng-click="delete_baike(item._id)">删除</a>
                     </td>
                 </tr>
                 </tbody>
@@ -135,9 +110,4 @@
             }
         });
     }
-    $('#baike-editor').summernote({
-        lang: 'zh-CN',
-        height: 350
-    });
-
 </script>
