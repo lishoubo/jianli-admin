@@ -1,7 +1,7 @@
 var jlApp = angular.module('jlApp', ['ngRoute']);
 
 jlApp.constant('config', {
-    host: 'http://localhost:8080'
+    host: 'http://121.196.233.31:8080'
 });
 jlApp.config(['$httpProvider', function ($httpProvider) {
     $httpProvider.defaults.withCredentials = true;
